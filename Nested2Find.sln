@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nested2Find", "Nested2Find\Nested2Find.csproj", "{3BA8E722-BCAA-4751-8097-125B0A8F97B2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{80A3A0D9-513C-47EB-9DDD-085736103FD2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nested2Find.Tests", "Nested2Find.Tests\Nested2Find.Tests.csproj", "{EE0BD2E4-37E2-4443-A771-595FE8E77A30}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{FC7D3123-FEF1-4DC1-8625-235C42CEDA77}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3BA8E722-BCAA-4751-8097-125B0A8F97B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BA8E722-BCAA-4751-8097-125B0A8F97B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BA8E722-BCAA-4751-8097-125B0A8F97B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BA8E722-BCAA-4751-8097-125B0A8F97B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE0BD2E4-37E2-4443-A771-595FE8E77A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE0BD2E4-37E2-4443-A771-595FE8E77A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE0BD2E4-37E2-4443-A771-595FE8E77A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE0BD2E4-37E2-4443-A771-595FE8E77A30}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EE0BD2E4-37E2-4443-A771-595FE8E77A30} = {80A3A0D9-513C-47EB-9DDD-085736103FD2}
+	EndGlobalSection
+EndGlobal
