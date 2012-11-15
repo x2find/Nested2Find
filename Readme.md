@@ -12,23 +12,23 @@ See http://docs.nuget.org/docs/workflows/using-nuget-without-committing-packages
 
 Include the IncludeTypeNameInNestedFieldNamesInterceptor and NestedFieldNameConvention to the conventions:
 
-'''c#
+```c#
 client.Conventions.ContractResolver.ObjectContractInterceptors.Add(new IncludeTypeNameInNestedFieldNamesInterceptor());
 client.Conventions.FieldNameConvention = new NestedFieldNameConvention();
-'''
+```
 
 and start filtering:
 
-'''c#
+```c#
 result = client.Search<Team>()
              .Filter(x => x.Players, p => p.FirstName.Match("Cristiano") & p.LastName.Match("Ronaldo"))
              .GetResult();
-'''
+```
 
 or:
 
-'''c#
+```c#
 result = client.Search<Team>()
             .Filter(x => x.Players.MatchItem(p => p.FirstName.Match("Cristiano") & p.LastName.Match("Ronaldo")))
             .GetResult();
-'''
+```
