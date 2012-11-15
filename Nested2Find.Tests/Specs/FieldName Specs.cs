@@ -50,9 +50,31 @@ namespace Nested2Find.Tests.Specs
             fieldName.ShouldNotContain("$$nested");
     }
 
+    public class when_getting_the_field_name_of_a_complex_object
+    {
+        static NestedFieldNameConvention fieldNameConvention;
+        static string fieldName;
+
+        Establish context = () =>
+        {
+            fieldNameConvention = new NestedFieldNameConvention();
+        };
+
+        Because of = () =>
+        {
+            Expression<Func<Document, Author>> expression = d => d.MainAuthor;
+            fieldName = fieldNameConvention.GetFieldName(expression);
+        };
+
+        It should_not_be_suffixed_nested = () =>
+            fieldName.ShouldNotContain("$$nested");
+    }
+
     class Document
     {
         public string Title { get; set; }
+
+        public Author MainAuthor { get; set; }
 
         public IEnumerable<Author> Authors { get; set; }
 
