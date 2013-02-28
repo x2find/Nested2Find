@@ -19,11 +19,7 @@ namespace Nested2Find.ClientConventions
             {
                 if (type.IsGenericType)
                 {
-                    // we want to nest only lists of objects not previously mapped to a specific type by EPiServer Find
-                    if ((type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                        && !(type.GetGenericArguments()[0].IsValueType || type.GetGenericArguments()[0] == typeof(string) || type.GetGenericArguments()[0] == typeof(DateTime))
-                        && !fieldName.Contains("$$")
-                        && !fieldName.StartsWith("__"))
+                    if (type.GetGenericTypeDefinition() == typeof(NestedList<>))
                     {
                         fieldName += "$$nested";
                     }

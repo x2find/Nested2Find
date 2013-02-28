@@ -13,7 +13,7 @@ namespace Nested2Find
 {
     public static class NestedFilterExtensions
     {
-        public static DelegateFilterBuilder MatchItem<TListItem>(this IEnumerable<TListItem> value, 
+        public static DelegateFilterBuilder MatchItem<TListItem>(this NestedList<TListItem> value, 
                                                             Expression<Func<TListItem, Filter>> filterExpression)
         {
             return new DelegateExpressionFilterBuilder<TListItem>(filterExpression, filter => x =>
@@ -64,7 +64,7 @@ namespace Nested2Find
         }
 
         public static ITypeSearch<TSource> Filter<TSource, TListItem>(this ITypeSearch<TSource> search,
-                                                                  Expression<Func<TSource, IEnumerable<TListItem>>> nestedExpression,
+                                                                  Expression<Func<TSource, NestedList<TListItem>>> nestedExpression,
                                                                   Expression<Func<TListItem, Filter>> filterExpression)
         {
             search.ValidateNotNullArgument("search");

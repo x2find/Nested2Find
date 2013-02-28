@@ -10,14 +10,34 @@ See http://docs.nuget.org/docs/workflows/using-nuget-without-committing-packages
 
 ### Usage
 
-Include the IncludeTypeNameInNestedFieldNamesInterceptor and NestedFieldNameConvention to the conventions:
+Add the nested conventions to the conventions:
 
 ```c#
-client.Conventions.ContractResolver.ObjectContractInterceptors.Add(new IncludeTypeNameInNestedFieldNamesInterceptor());
-client.Conventions.FieldNameConvention = new NestedFieldNameConvention();
+client.Conventions.AddNestedConventions();
 ```
 
-and start filtering:
+Create an object containing a NestedList of objects
+
+```c#
+public class Team
+{
+    public Team(string name)
+    {
+        TeamName = name;
+        Players = new NestedList<Player>();
+    }
+    public string TeamName { get; set; }
+    public NestedList<Player> Players { get; set; }
+}
+
+public class Player
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+}
+```
+
+Index and start filtering:
 
 ```c#
 result = client.Search<Team>()

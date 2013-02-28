@@ -17,23 +17,14 @@ namespace Nested2Find.Tests.Specs
         Establish context = () =>
         {
             client = Client.CreateFromConfig();
-            client.Conventions.ContractResolver.ObjectContractInterceptors.Add(new IncludeTypeNameInNestedFieldNamesInterceptor());
-            client.Conventions.FieldNameConvention = new NestedFieldNameConvention();
         };
 
         Because of = () =>
         {
-            exception = Catch.Exception(() => client.Search<BlogPost>().Filter(x => x.Tags, s => s.Match("abc")));
+            exception = Catch.Exception(() => client.Search<Document>().Filter(x => x.Authors, s => s.Name.Match("abc")));
         };
 
         It should_have_thrown_an_exception = () => 
             exception.ShouldNotBeNull();
-    }
-
-    class BlogPost
-    {
-        public string Title { get; set; }
-
-        public IEnumerable<string> Tags { get; set; }
     }
 }

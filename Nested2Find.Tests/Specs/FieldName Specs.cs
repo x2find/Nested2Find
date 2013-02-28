@@ -22,7 +22,7 @@ namespace Nested2Find.Tests.Specs
 
         Because of = () =>
         {
-            Expression<Func<Document, IEnumerable<Author>>> expression = d => d.Authors;
+            Expression<Func<Document, NestedList<Author>>> expression = d => d.Authors;
             fieldName = fieldNameConvention.GetFieldName(expression);
         };
 
@@ -76,7 +76,7 @@ namespace Nested2Find.Tests.Specs
 
         public Author MainAuthor { get; set; }
 
-        public IEnumerable<Author> Authors { get; set; }
+        public NestedList<Author> Authors { get; set; }
 
         public IEnumerable<string> Tags { get; set; }
     }

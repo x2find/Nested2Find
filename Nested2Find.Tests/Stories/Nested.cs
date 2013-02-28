@@ -45,8 +45,7 @@ namespace Nested2Find.Stories
 
         void IHaveMappedIEnumerablePropertiesAsNested()
         {
-            client.Conventions.ContractResolver.ObjectContractInterceptors.Add(new IncludeTypeNameInNestedFieldNamesInterceptor());
-            client.Conventions.FieldNameConvention = new NestedFieldNameConvention();
+            client.Conventions.AddNestedConventions();
         }
 
         private Team team1, team2;
@@ -132,8 +131,7 @@ namespace Nested2Find.Stories
 
         void IHaveMappedIEnumerablePropertiesAsNested()
         {
-            client.Conventions.ContractResolver.ObjectContractInterceptors.Add(new IncludeTypeNameInNestedFieldNamesInterceptor());
-            client.Conventions.FieldNameConvention = new NestedFieldNameConvention();
+            client.Conventions.AddNestedConventions();
         }
 
         private Team team1, team2;
@@ -222,8 +220,7 @@ namespace Nested2Find.Stories
 
         void IHaveMappedIEnumerablePropertiesAsNested()
         {
-            client.Conventions.ContractResolver.ObjectContractInterceptors.Add(new IncludeTypeNameInNestedFieldNamesInterceptor());
-            client.Conventions.FieldNameConvention = new NestedFieldNameConvention();
+            client.Conventions.AddNestedConventions();
         }
 
         private League league1, league2;
@@ -299,10 +296,10 @@ namespace Nested2Find.Stories
         public League(string name)
         {
             LeagueName = name;
-            Teams = new List<Team>();
+            Teams = new NestedList<Team>();
         }
         public string LeagueName { get; set; }
-        public List<Team> Teams { get; set; }
+        public NestedList<Team> Teams { get; set; }
     }
 
     public class Team
@@ -310,10 +307,10 @@ namespace Nested2Find.Stories
         public Team(string name)
         {
             TeamName = name;
-            Players = new List<Player>();
+            Players = new NestedList<Player>();
         }
         public string TeamName { get; set; }
-        public List<Player> Players { get; set; }
+        public NestedList<Player> Players { get; set; }
     }
 
     public class Player

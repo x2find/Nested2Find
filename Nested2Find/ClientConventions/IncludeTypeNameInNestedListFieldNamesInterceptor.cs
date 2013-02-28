@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Serialization;
 using EPiServer.Find.Json;
+using System.Linq.Expressions;
 
 namespace Nested2Find.ClientConventions
 {
-    public class IncludeTypeNameInNestedFieldNamesInterceptor : IInterceptObjectContract
+    public class IncludeTypeNameInNestedListFieldNamesInterceptor : IInterceptObjectContract
     {
         public JsonObjectContract ModifyContract(JsonObjectContract contract)
         {
@@ -17,11 +18,7 @@ namespace Nested2Find.ClientConventions
                 {
                     if (type.IsGenericType)
                     {
-                        // we want to nest only lists of objects not previously mapped to a specific type by EPiServer Find
-                        if ((type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
-                            && !(type.GetGenericArguments()[0].IsValueType || type.GetGenericArguments()[0] == typeof(string) || type.GetGenericArguments()[0] == typeof(DateTime))
-                            && !property.PropertyName.Contains("$$") 
-                            && !property.PropertyName.StartsWith("__"))
+                        if (type.GetGenericTypeDefinition() == typeof(NestedList<>))
                         {
                             property.PropertyName = property.PropertyName + "$$nested";
                         }

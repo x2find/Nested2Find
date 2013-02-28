@@ -53,10 +53,12 @@
   <ItemGroup>
     <Compile Include="Api\Querying\Filters\NestedFilter.cs" />
     <Compile Include="Api\Querying\Filters\NestedFilterConverter.cs" />
-    <Compile Include="ClientConventions\IncludeTypeNameInNestedFieldNamesInterceptor.cs" />
+    <Compile Include="ClientConventions\IncludeTypeNameInNestedListFieldNamesInterceptor.cs" />
+    <Compile Include="ClientConventions\NestedClientConventionsExtensions.cs" />
     <Compile Include="ClientConventions\NestedFieldNameConvention.cs" />
     <Compile Include="DelegateExpressionFilterBuilder.cs" />
     <Compile Include="NestedFilterExtensions.cs" />
+    <Compile Include="NestedList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
