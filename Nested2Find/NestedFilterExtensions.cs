@@ -49,6 +49,12 @@ namespace Nested2Find
             foreach (var property in filterOrQuery.GetType().GetProperties())
             {
                 var obj = property.GetGetMethod().Invoke(filterOrQuery, new object[] { });
+
+                if (obj.IsNull())
+                {
+                    continue;
+                }
+
                 if (obj is Filter || obj is IQuery)
                 {
                     PrependPathOnNestedFilters(path, obj);
