@@ -504,6 +504,226 @@ namespace Nested2Find.Stories
         }
     }
 
+    public class NestedHistogramFacet1
+    {
+        [Fact]
+        public void RequestHistogramFacetOnANestedListOfComplexObjects()
+        {
+            new Story("Reqest a histogram facet on a item property in a list")
+                .InOrderTo("be able to create a histogram facet on a item property in a lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map list of complex objects as nested and request a histogram facet on a item property")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary100000000)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary1000)
+                    .And(TheSecondTeamHasAPlayerNamedJohnRonaldoWithSalary10)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamAndRequestAHistogramFacetOnPlayersSalary)
+                .Then(IShouldGetAResultWithAHistogramFacetForPlayersSalary)
+                    .And(ItShouldHaveABucketFor10WithCount1)
+                    .And(ItShouldHaveABucketFor1000WithCount1)
+                    .And(ItShouldHaveABucketFor100000000WithCount1)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary100000000()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", Salary = 100000000 });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary1000()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", Salary = 1000 });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnRonaldoWithSalary10()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Ronaldo", Salary = 10 });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamAndRequestAHistogramFacetOnPlayersSalary()
+        {
+            result = client.Search<Team>()
+                        .HistogramFacetFor(x => x.Players, x => x.Salary, 10)
+                        .GetResult();
+        }
+
+        HistogramFacet facet;
+        void IShouldGetAResultWithAHistogramFacetForPlayersSalary()
+        {
+            facet = result.HistogramFacetFor(x => x.Players, x => x.Salary);
+            facet.Should().NotBeNull();
+        }
+
+        void ItShouldHaveABucketFor10WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 10 && x.Count == 1);
+        }
+
+        void ItShouldHaveABucketFor1000WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 1000 && x.Count == 1);
+        }
+
+        void ItShouldHaveABucketFor100000000WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 100000000 && x.Count == 1);
+        }
+    }
+
+    public class NestedHistogramFacet2
+    {
+        [Fact]
+        public void RequestHistogramFacetOnANestedListOfComplexObjects()
+        {
+            new Story("Reqest a histogram facet on a item property in a list")
+                .InOrderTo("be able to create a histogram facet on a item property in a lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map list of complex objects as nested and request a histogram facet on a item property")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoLeagueObjects)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary100000000)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary1000)
+                    .And(TheSecondTeamHasAPlayerNamedJohnRonaldoWithSalary10)
+                    .And(TheFirstTeamPlaysInTheFirstLeague)
+                    .And(TheSecondTeamPlaysInTheSecondLeague)
+                    .And(IHaveIndexedTheLeagueObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForLeagueAndRequestAHistogramFacetOnTeamsPlayersSalary)
+                .Then(IShouldGetAResultWithAHistogramFacetForTeamsPlayersSalary)
+                    .And(ItShouldHaveABucketFor10WithCount1)
+                    .And(ItShouldHaveABucketFor1000WithCount1)
+                    .And(ItShouldHaveABucketFor100000000WithCount1)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private League league1, league2;
+        void IHaveTwoLeagueObjects()
+        {
+            league1 = new League("League 1");
+            league2 = new League("League 2");
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary100000000()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", Salary = 100000000 });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary1000()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", Salary = 1000 });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnRonaldoWithSalary10()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Ronaldo", Salary = 10 });
+        }
+
+        void TheFirstTeamPlaysInTheFirstLeague()
+        {
+            league1.Teams.Add(team1);
+        }
+
+        void TheSecondTeamPlaysInTheSecondLeague()
+        {
+            league2.Teams.Add(team2);
+        }
+
+        void IHaveIndexedTheLeagueObjects()
+        {
+            client.Index(league1, league2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<League> result;
+        void ISearchForLeagueAndRequestAHistogramFacetOnTeamsPlayersSalary()
+        {
+            result = client.Search<League>()
+                        .HistogramFacetFor(x => x.Teams, x => x.Players, x => x.Salary, 10)
+                        .GetResult();
+        }
+
+        HistogramFacet facet;
+        void IShouldGetAResultWithAHistogramFacetForTeamsPlayersSalary()
+        {
+            facet = result.HistogramFacetFor(x => x.Teams, x => x.Players, x => x.Salary);
+            facet.Should().NotBeNull();
+        }
+
+        void ItShouldHaveABucketFor10WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 10 && x.Count == 1);
+        }
+
+        void ItShouldHaveABucketFor1000WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 1000 && x.Count == 1);
+        }
+
+        void ItShouldHaveABucketFor100000000WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 100000000 && x.Count == 1);
+        }
+    }
+
     public class League
     {
         public League(string name)
@@ -530,5 +750,6 @@ namespace Nested2Find.Stories
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public int Salary { get; set; }
     }
 }

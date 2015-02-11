@@ -25,6 +25,7 @@ namespace Nested2Find
             return facet as TFacet;
         }
 
+        #region TermsFacet
         public static TermsFacet TermsFacetFor<TResult, TEnumerableItem>(
             this IHasFacetResults<TResult> facetsResultsContainer, Expression<Func<TResult, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, string>> itemFieldSelector)
         {
@@ -36,5 +37,20 @@ namespace Nested2Find
         {
             return GetFacetFor<TermsFacet>(facetsResultsContainer, enumerableFieldSelector1.GetFieldPath() + "." + enumerableFieldSelector2.GetFieldPath() + "." + itemFieldSelector.GetFieldPath());
         }
+        #endregion
+
+        #region HistogramFacet
+        public static HistogramFacet HistogramFacetFor<TResult, TEnumerableItem>(
+            this IHasFacetResults<TResult> facetsResultsContainer, Expression<Func<TResult, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, object>> itemFieldSelector)
+        {
+            return GetFacetFor<HistogramFacet>(facetsResultsContainer, enumerableFieldSelector.GetFieldPath() + "." + itemFieldSelector.GetFieldPath());
+        }
+
+        public static HistogramFacet HistogramFacetFor<TResult, TEnumerableItem1, TEnumerableItem2>(
+            this IHasFacetResults<TResult> facetsResultsContainer, Expression<Func<TResult, NestedList<TEnumerableItem1>>> enumerableFieldSelector1, Expression<Func<TEnumerableItem1, NestedList<TEnumerableItem2>>> enumerableFieldSelector2, Expression<Func<TEnumerableItem2, object>> itemFieldSelector)
+        {
+            return GetFacetFor<HistogramFacet>(facetsResultsContainer, enumerableFieldSelector1.GetFieldPath() + "." + enumerableFieldSelector2.GetFieldPath() + "." + itemFieldSelector.GetFieldPath());
+        }
+        #endregion
     }
 }
