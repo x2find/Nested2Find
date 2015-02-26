@@ -4,8 +4,10 @@ using System.Linq;
 using System.Linq.Expressions;
 using EPiServer.Find;
 using EPiServer.Find.Api.Querying.Filters;
-using EPiServer.Find.ClientConventions;
-using FluentAssertions;
+﻿using EPiServer.Find.Api.Querying.Queries;
+﻿using EPiServer.Find.ClientConventions;
+﻿using EPiServer.Find.Helpers.Text;
+﻿using FluentAssertions;
 using StoryQ;
 using Xunit;
 using System.Threading;
@@ -13,7 +15,7 @@ using Nested2Find.ClientConventions;
 
 namespace Nested2Find.Stories
 {
-    public class Nested
+    public class Nested : IDisposable
     {
         [Fact]
         public void FilterByMultipleValuesForAComplexObjectInAListUsingFilter()
@@ -97,9 +99,16 @@ namespace Nested2Find.Stories
         {
             result.Single().TeamName.Should().Be(team1.TeamName);
         }
+
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
     }
 
-    public class Nested2
+    public class Nested2 : IDisposable
     {
         [Fact]
         public void FilterByMultipleValuesForAComplexObjectInAListUsingFilterDelegateBuilder()
@@ -183,9 +192,15 @@ namespace Nested2Find.Stories
         {
             result.Single().TeamName.Should().Be(team1.TeamName);
         }
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
     }
 
-    public class Nested3
+    public class Nested3 : IDisposable
     {
         [Fact]
         public void FilterByMultipleValuesForANestedListOfComplexObjectsUsingFilterDelegateBuilder()
@@ -288,6 +303,12 @@ namespace Nested2Find.Stories
         void ItShouldBeForTheFirstTeam()
         {
             result.Single().LeagueName.Should().Be(league1.LeagueName);
+        }
+
+        public void Dispose()
+        {
+            client.Delete<League>(x => x.LeagueName.Match(league1.LeagueName));
+            client.Delete<League>(x => x.LeagueName.Match(league1.LeagueName));
         }
     }
 
