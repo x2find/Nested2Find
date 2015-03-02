@@ -64,6 +64,11 @@ namespace Nested2Find
                 {
                     PrependPathOnNestedFilters(path, obj);
                 }
+
+                if (obj is String && property.Name.Equals("Field")) // prepend path to field name properties
+                {
+                    property.SetValue(filterOrQuery, string.Format("{0}.{1}", path, obj));
+                }
             }
 
             return;
@@ -84,6 +89,7 @@ namespace Nested2Find
             }
             var parser = new FilterExpressionParser(search.Client.Conventions);
             var filter = parser.GetFilter(filterExpression);
+            PrependPathOnNestedFilters(path, filter);
             var nestedFilter = new NestedFilter(path, filter);
             return search.Filter(nestedFilter);
         }
