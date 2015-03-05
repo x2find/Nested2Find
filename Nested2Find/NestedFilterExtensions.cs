@@ -65,7 +65,7 @@ namespace Nested2Find
 
                 if (obj is String && property.Name.Equals("Field")) // prepend path to field name properties
                 {
-                    property.SetValue(filterOrQuery, string.Format("{0}.{1}", path, obj));
+                    property.SetValue(filterOrQuery, string.Format("{0}.{1}", path, obj), null);
                 }
             }
 

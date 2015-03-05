@@ -9,5 +9,9 @@
     <projectUrl>https://github.com/x2find/Nested2Find</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
+    <dependencies>
+      <dependency id="EPiServer.Find" version="[8.2,9.0)" />
+      <dependency id="Newtonsoft.Json" version="[5.0.5,6.0)" />
+    </dependencies>
   </metadata>
 </package>
