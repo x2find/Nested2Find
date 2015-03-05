@@ -12,6 +12,7 @@ using StoryQ;
 using Xunit;
 using System.Threading;
 using Nested2Find.ClientConventions;
+using Nested2Find.Tests.Support.Model;
 
 namespace Nested2Find.Stories
 {
@@ -315,10 +316,10 @@ namespace Nested2Find.Stories
     public class Nested4 : IDisposable
     {
         [Fact]
-        public void FilterByMultipleValuesForANestedListOfComplexObjectsWithDupplicatePropertyNamesUsingFilterDelegateBuilder()
+        public void FilterByMultipleValuesForANestedListOfComplexObjectsWithDuplicatePropertyNamesUsingFilterDelegateBuilder()
         {
             new Story("Filter by matching a specific item in a list")
-                .InOrderTo("be able to filter by several values on objects in lists of complex objects having similar property names")
+                .InOrderTo("be able to filter by several values on objects in lists of complex objects having identical property names")
                 .AsA("developer")
                 .IWant("to be able to map list of complex objects as nested and filter by multiple values in a unique object in the list")
                 .WithScenario("mapping list of complex objects as nested")
@@ -422,65 +423,5 @@ namespace Nested2Find.Stories
             client.Delete<Company>(x => x.Name.Match(company1.Name));
             client.Delete<Company>(x => x.Name.Match(company2.Name));
         }
-    }
-
-    public class League
-    {
-        public League(string name)
-        {
-            LeagueName = name;
-            Teams = new NestedList<Team>();
-        }
-        public string LeagueName { get; set; }
-        public NestedList<Team> Teams { get; set; }
-    }
-
-    public class Team
-    {
-        public Team(string name)
-        {
-            TeamName = name;
-            Players = new NestedList<Player>();
-        }
-        public string TeamName { get; set; }
-        public NestedList<Player> Players { get; set; }
-    }
-
-    public class Player
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public int Salary { get; set; }
-    }
-
-    public class Company
-    {
-        public Company(string name)
-        {
-            Name = name;
-            Departments = new NestedList<Department>();
-        }
-
-        public string Name { get; set; }
-        public NestedList<Department> Departments { get; set; } 
-    }
-
-    public class Department
-    {
-        public Department(string name)
-        {
-            Name = name;
-            Employees = new NestedList<Employee>();
-        }
-
-        public string Name { get; set; }
-        public NestedList<Employee> Employees { get; set; }
-    }
-
-    public class Employee
-    {
-        public string Name { get; set; }
-        public string LastName { get; set; }
-
     }
 }

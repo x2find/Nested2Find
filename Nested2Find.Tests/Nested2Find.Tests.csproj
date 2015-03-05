@@ -88,6 +88,8 @@
     <Compile Include="Stories\Nested.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Support\Model\CompanyDepartmentEmployee.cs" />
+    <Compile Include="Support\Model\LeaugeTeamPlayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

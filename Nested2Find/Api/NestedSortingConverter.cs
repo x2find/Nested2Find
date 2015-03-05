@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using EPiServer.Find.Api;
+﻿using EPiServer.Find.Api;
 using EPiServer.Find.Helpers;
 using Newtonsoft.Json;
+using System;
 
 namespace Nested2Find.Api
 {

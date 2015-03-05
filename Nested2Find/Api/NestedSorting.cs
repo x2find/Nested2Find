@@ -1,7 +1,7 @@
 ﻿using EPiServer.Find.Api;
 using EPiServer.Find.Api.Querying;
-using EPiServer.Find.Json;
 using Newtonsoft.Json;
+
 namespace Nested2Find.Api
 {
     public enum SortMode

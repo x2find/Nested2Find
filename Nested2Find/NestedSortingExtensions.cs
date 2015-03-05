@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using EPiServer.Find;
+﻿using EPiServer.Find;
 using EPiServer.Find.Api;
 using EPiServer.Find.Api.Querying;
 using EPiServer.Find.Helpers;
 using Nested2Find.Api;
+using System;
+using System.Linq.Expressions;
 
 namespace Nested2Find
 {
@@ -99,6 +95,7 @@ namespace Nested2Find
                 }));
         }
 
+        #region Int/DateTime
         public static ITypeSearch<TSource> OrderBy<TSource, TEnumerableItem>(
             this ITypeSearch<TSource> search,
             Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, int>> itemFieldSelector, SortMode? mode)
@@ -154,5 +151,6 @@ namespace Nested2Find
         {
             return search.OrderBy(enumerableFieldSelector, itemFieldSelector, filterExpression, SortMissing.First, SortOrder.Descending, mode);
         }
+        #endregion
     }
 }

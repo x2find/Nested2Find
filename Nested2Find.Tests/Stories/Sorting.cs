@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using EPiServer.Find;
 using FluentAssertions;
 using Machine.Specifications;
 using Nested2Find.Api;
 using Nested2Find.ClientConventions;
-using Nested2Find.Stories;
 using StoryQ;
 using Xunit;
+using Nested2Find.Tests.Support.Model;
 
 namespace Nested2Find.Tests.Stories
 {
