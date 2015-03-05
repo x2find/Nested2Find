@@ -25,7 +25,7 @@ namespace Nested2Find
                 });
         }
 
-        private static void PrependPathOnNestedFilters(string path, object filterOrQuery)
+        public static void PrependPathOnNestedFilters(string path, object filterOrQuery)
         {
             if (filterOrQuery is NestedFilter)
             {
