@@ -126,6 +126,34 @@ namespace Nested2Find
 
         public static ITypeSearch<TSource> OrderBy<TSource, TEnumerableItem>(
             this ITypeSearch<TSource> search,
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, int?>> itemFieldSelector, SortMode? mode)
+        {
+            return search.OrderBy(enumerableFieldSelector, itemFieldSelector, null, mode);
+        }
+
+        public static ITypeSearch<TSource> OrderBy<TSource, TEnumerableItem>(
+            this ITypeSearch<TSource> search,
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, int?>> itemFieldSelector, Expression<Func<TEnumerableItem, Filter>> filterExpression, SortMode? mode)
+        {
+            return search.OrderBy(enumerableFieldSelector, itemFieldSelector, filterExpression, SortMissing.First, SortOrder.Ascending, mode);
+        }
+
+        public static ITypeSearch<TSource> OrderByDescending<TSource, TEnumerableItem>(
+            this ITypeSearch<TSource> search,
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, int?>> itemFieldSelector, SortMode? mode)
+        {
+            return search.OrderByDescending(enumerableFieldSelector, itemFieldSelector, null, mode);
+        }
+
+        public static ITypeSearch<TSource> OrderByDescending<TSource, TEnumerableItem>(
+            this ITypeSearch<TSource> search,
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, int?>> itemFieldSelector, Expression<Func<TEnumerableItem, Filter>> filterExpression, SortMode? mode)
+        {
+            return search.OrderBy(enumerableFieldSelector, itemFieldSelector, filterExpression, SortMissing.First, SortOrder.Descending, mode);
+        }
+
+        public static ITypeSearch<TSource> OrderBy<TSource, TEnumerableItem>(
+            this ITypeSearch<TSource> search,
             Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, DateTime>> itemFieldSelector, SortMode? mode)
         {
             return search.OrderBy(enumerableFieldSelector, itemFieldSelector, null, mode);
@@ -148,6 +176,34 @@ namespace Nested2Find
         public static ITypeSearch<TSource> OrderByDescending<TSource, TEnumerableItem>(
             this ITypeSearch<TSource> search,
             Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, DateTime>> itemFieldSelector, Expression<Func<TEnumerableItem, Filter>> filterExpression, SortMode? mode)
+        {
+            return search.OrderBy(enumerableFieldSelector, itemFieldSelector, filterExpression, SortMissing.First, SortOrder.Descending, mode);
+        }
+
+        public static ITypeSearch<TSource> OrderBy<TSource, TEnumerableItem>(
+            this ITypeSearch<TSource> search,
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, DateTime?>> itemFieldSelector, SortMode? mode)
+        {
+            return search.OrderBy(enumerableFieldSelector, itemFieldSelector, null, mode);
+        }
+
+        public static ITypeSearch<TSource> OrderBy<TSource, TEnumerableItem>(
+            this ITypeSearch<TSource> search,
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, DateTime?>> itemFieldSelector, Expression<Func<TEnumerableItem, Filter>> filterExpression, SortMode? mode)
+        {
+            return search.OrderBy(enumerableFieldSelector, itemFieldSelector, filterExpression, SortMissing.First, SortOrder.Ascending, mode);
+        }
+
+        public static ITypeSearch<TSource> OrderByDescending<TSource, TEnumerableItem>(
+            this ITypeSearch<TSource> search,
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, DateTime?>> itemFieldSelector, SortMode? mode)
+        {
+            return search.OrderByDescending(enumerableFieldSelector, itemFieldSelector, null, mode);
+        }
+
+        public static ITypeSearch<TSource> OrderByDescending<TSource, TEnumerableItem>(
+            this ITypeSearch<TSource> search,
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, DateTime?>> itemFieldSelector, Expression<Func<TEnumerableItem, Filter>> filterExpression, SortMode? mode)
         {
             return search.OrderBy(enumerableFieldSelector, itemFieldSelector, filterExpression, SortMissing.First, SortOrder.Descending, mode);
         }

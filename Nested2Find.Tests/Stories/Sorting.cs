@@ -403,4 +403,204 @@ namespace Nested2Find.Tests.Stories
             client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
         }
     }
+
+    public class Sorting5 : IDisposable
+    {
+        [Fact]
+        public void SortByMostRecentDateTimeValueInAListOfComplexObjects()
+        {
+            new Story("Sort by most recent datetime value in a lists of complex objects")
+                .InOrderTo("be able to sort by most recent datetime value on objects in lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map a list of complex objects as nested and sort by the most recent datetime value in an object in the list")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldoSigned2009)
+                    .And(TheFirstTeamHasAPlayerNamedTheWaterboySigned1998)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoeSigned2007)
+                    .And(TheSecondTeamHasAPlayerNamedJohnDoeSigned2003)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamsSortByMostRecentSignDate)
+                .Then(IShouldGetAListOfAllTeams)
+                .And(ItShouldBeSortedByTheMostRecentSignDate)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldoSigned2009()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", SignDate = new DateTime(2009, 1, 1) });
+        }
+
+        void TheFirstTeamHasAPlayerNamedTheWaterboySigned1998()
+        {
+            team1.Players.Add(new Player { FirstName = "The", LastName = "Waterboy", SignDate = new DateTime(1998, 1, 1) });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoeSigned2007()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", SignDate = new DateTime(2007, 1, 1) });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnDoeSigned2003()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Doe", SignDate = new DateTime(2003, 1, 1) });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamsSortByMostRecentSignDate()
+        {
+            result = client.Search<Team>()
+                        .OrderByDescending(x => x.Players, p => p.SignDate, SortMode.Max)
+                        .GetResult();
+        }
+
+        void IShouldGetAListOfAllTeams()
+        {
+            result.TotalMatching.Should().Be(2);
+        }
+
+        void ItShouldBeSortedByTheMostRecentSignDate()
+        {
+            result.ElementAt(0).ShouldMatch(t => t.TeamName.Equals("Team 1"));
+            result.ElementAt(1).ShouldMatch(t => t.TeamName.Equals("Team 2"));
+        }
+
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
+    }
+
+    public class Sorting6 : IDisposable
+    {
+        [Fact]
+        public void SortByOldesttDateTimeValueInAListOfComplexObjects()
+        {
+            new Story("Sort by oldest datetime value in a lists of complex objects")
+                .InOrderTo("be able to sort by oldest datetime value on objects in lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map a list of complex objects as nested and sort by the oldest datetime value in an object in the list")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldoSigned2009)
+                    .And(TheFirstTeamHasAPlayerNamedTheWaterboySigned1998)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoeSigned2007)
+                    .And(TheSecondTeamHasAPlayerNamedJohnDoeSigned2003)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamsSortByOldestSignDate)
+                .Then(IShouldGetAListOfAllTeams)
+                .And(ItShouldBeSortedByTheOldestSignDate)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldoSigned2009()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", SignDate = new DateTime(2009, 1, 1) });
+        }
+
+        void TheFirstTeamHasAPlayerNamedTheWaterboySigned1998()
+        {
+            team1.Players.Add(new Player { FirstName = "The", LastName = "Waterboy", SignDate = new DateTime(1998, 1, 1) });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoeSigned2007()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", SignDate = new DateTime(2007, 1, 1) });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnDoeSigned2003()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Doe", SignDate = new DateTime(2003, 1, 1) });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamsSortByOldestSignDate()
+        {
+            result = client.Search<Team>()
+                        .OrderByDescending(x => x.Players, p => p.SignDate, SortMode.Min)
+                        .GetResult();
+        }
+
+        void IShouldGetAListOfAllTeams()
+        {
+            result.TotalMatching.Should().Be(2);
+        }
+
+        void ItShouldBeSortedByTheOldestSignDate()
+        {
+            result.ElementAt(0).ShouldMatch(t => t.TeamName.Equals("Team 2"));
+            result.ElementAt(1).ShouldMatch(t => t.TeamName.Equals("Team 1"));
+        }
+
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
+    }
 }

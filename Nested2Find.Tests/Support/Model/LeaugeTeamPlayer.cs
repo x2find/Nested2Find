@@ -33,5 +33,6 @@ namespace Nested2Find.Tests.Support.Model
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public int Salary { get; set; }
+        public DateTime? SignDate { get; set; }
     }
 }
