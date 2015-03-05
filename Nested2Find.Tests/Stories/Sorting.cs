@@ -249,7 +249,7 @@ namespace Nested2Find.Tests.Stories
 
         void TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary1000000()
         {
-            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", Salary = 100000});
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", Salary = 1000000 });
         }
 
         void TheFirstTeamHasAPlayerNamedTheWaterboyWithSalary10()
@@ -259,7 +259,7 @@ namespace Nested2Find.Tests.Stories
 
         void TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary100000()
         {
-            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", Salary = 100000});
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", Salary = 100000 });
         }
 
         void TheSecondTeamHasAPlayerNamedJohnDoeWithSalary10000()
@@ -349,7 +349,7 @@ namespace Nested2Find.Tests.Stories
 
         void TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary1000000()
         {
-            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", Salary = 100000 });
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", Salary = 1000000 });
         }
 
         void TheFirstTeamHasAPlayerNamedTheWaterboyWithSalary10()
