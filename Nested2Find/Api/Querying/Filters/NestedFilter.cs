@@ -19,5 +19,7 @@ namespace Nested2Find.Api.Querying.Filters
         public string Path { get; set; }
 
         public Filter Filter { get; set; }
+
+        public bool? Join { get; set; }
     }
 }

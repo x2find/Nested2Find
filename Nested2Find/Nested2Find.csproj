@@ -44,24 +44,28 @@
       <HintPath>..\packages\Newtonsoft.Json.5.0.5\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Facets\NestedDateHistogramFacetRequest.cs" />
+    <Compile Include="Api\Facets\NestedDateHistogramFacetRequestConverter.cs" />
+    <Compile Include="Api\Facets\NestedFacetRequest.cs" />
+    <Compile Include="Api\Facets\NestedHistogramFacetRequestConverter.cs" />
+    <Compile Include="Api\Facets\NestedTermsFacetRequest.cs" />
+    <Compile Include="Api\Facets\NestedTermsFacetRequestConverter.cs" />
+    <Compile Include="Api\Facets\NestedHistogramFacetRequest.cs" />
     <Compile Include="Api\NestedSorting.cs" />
     <Compile Include="Api\NestedSortingConverter.cs" />
     <Compile Include="Api\Querying\Filters\NestedFilter.cs" />
     <Compile Include="Api\Querying\Filters\NestedFilterConverter.cs" />
+    <Compile Include="Helpers\Reflection\ExpressionExtensions.cs" />
+    <Compile Include="NestedFacetResultExtraction.cs" />
     <Compile Include="ClientConventions\IncludeTypeNameInNestedListFieldNamesInterceptor.cs" />
     <Compile Include="ClientConventions\NestedClientConventionsExtensions.cs" />
     <Compile Include="ClientConventions\NestedFieldNameConvention.cs" />
     <Compile Include="DelegateExpressionFilterBuilder.cs" />
+    <Compile Include="NestedFacetExtensions.cs" />
     <Compile Include="NestedFilterExtensions.cs" />
     <Compile Include="NestedList.cs" />
     <Compile Include="NestedSortingExtensions.cs" />

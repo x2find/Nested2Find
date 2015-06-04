@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using EPiServer.Find;
-using EPiServer.Find.Api.Querying.Filters;
+﻿using EPiServer.Find.Api.Facets;
+﻿using EPiServer.Find.Api.Querying.Filters;
 ﻿using EPiServer.Find.Api.Querying.Queries;
 ﻿using EPiServer.Find.ClientConventions;
 ﻿using EPiServer.Find.Helpers.Text;
@@ -313,6 +314,7 @@ namespace Nested2Find.Stories
         }
     }
 
+
     public class Nested4 : IDisposable
     {
         [Fact]
@@ -422,6 +424,614 @@ namespace Nested2Find.Stories
         {
             client.Delete<Company>(x => x.Name.Match(company1.Name));
             client.Delete<Company>(x => x.Name.Match(company2.Name));
+        }
+    }
+
+    public class NestedTermFacet1 : IDisposable
+    {
+        [Fact]
+        public void RequestTermsFacetOnANestedListOfComplexObjects()
+        {
+            new Story("Reqest a terms facet on a item property in a list")
+                .InOrderTo("be able to create a terms facet on a item property in a lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map list of complex objects as nested and request a terms facet on a item property")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldo)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoe)
+                    .And(TheSecondTeamHasAPlayerNamedJohnRonaldo)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamAndRequestATermsFacetOnPlayersFirstName)
+                .Then(IShouldGetAResultWithATermsFacetForPlayersFirstName)
+                    .And(ItShouldHaveTermChristianoWithCount2)
+                    .And(ItShouldHaveTermJohnWithCount1)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldo()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo" });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoe()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe" });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnRonaldo()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Ronaldo" });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamAndRequestATermsFacetOnPlayersFirstName()
+        {
+            result = client.Search<Team>()
+                        .TermsFacetFor(x => x.Players, x => x.FirstName)
+                        .GetResult();
+        }
+
+        TermsFacet facet;
+        void IShouldGetAResultWithATermsFacetForPlayersFirstName()
+        {
+            facet = result.TermsFacetFor(x => x.Players, x => x.FirstName);
+            facet.Should().NotBeNull();
+        }
+
+        void ItShouldHaveTermChristianoWithCount2()
+        {
+            facet.Terms.First().Term.Should().Be("Cristiano");
+            facet.Terms.First().Count.Should().Be(2);
+        }
+
+        void ItShouldHaveTermJohnWithCount1()
+        {
+            facet.Terms.ElementAt(1).Term.Should().Be("John");
+            facet.Terms.ElementAt(1).Count.Should().Be(1);
+        }
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
+    }
+
+    public class NestedHistogramFacet1 : IDisposable
+    {
+        [Fact]
+        public void RequestHistogramFacetOnANestedListOfComplexObjects()
+        {
+            new Story("Reqest a histogram facet on a item property in a list")
+                .InOrderTo("be able to create a histogram facet on a item property in a lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map list of complex objects as nested and request a histogram facet on a item property")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary100000000)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary1000)
+                    .And(TheSecondTeamHasAPlayerNamedJohnRonaldoWithSalary10)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamAndRequestAHistogramFacetOnPlayersSalary)
+                .Then(IShouldGetAResultWithAHistogramFacetForPlayersSalary)
+                    .And(ItShouldHaveABucketFor10WithCount1)
+                    .And(ItShouldHaveABucketFor1000WithCount1)
+                    .And(ItShouldHaveABucketFor100000000WithCount1)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary100000000()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", Salary = 100000000 });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary1000()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", Salary = 1000 });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnRonaldoWithSalary10()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Ronaldo", Salary = 10 });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamAndRequestAHistogramFacetOnPlayersSalary()
+        {
+            result = client.Search<Team>()
+                        .HistogramFacetFor(x => x.Players, x => x.Salary, 10)
+                        .GetResult();
+        }
+
+        HistogramFacet facet;
+        void IShouldGetAResultWithAHistogramFacetForPlayersSalary()
+        {
+            facet = result.HistogramFacetFor(x => x.Players, x => x.Salary);
+            facet.Should().NotBeNull();
+        }
+
+        void ItShouldHaveABucketFor10WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 10 && x.Count == 1);
+        }
+
+        void ItShouldHaveABucketFor1000WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 1000 && x.Count == 1);
+        }
+
+        void ItShouldHaveABucketFor100000000WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 100000000 && x.Count == 1);
+        }
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
+    }
+
+    public class NestedTermFacetFilter1 : IDisposable
+    {
+        [Fact]
+        public void RequestTermsFacetOnANestedListOfComplexObjects()
+        {
+            new Story("Reqest a terms facet on a item property in a list")
+                .InOrderTo("be able to create a terms facet on a item property in a filtered lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map list of complex objects as nested and request a terms facet on a item property")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldo)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoe)
+                    .And(TheSecondTeamHasAPlayerNamedJohnRonaldo)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamAndRequestATermsFacetOnPlayersFirstNameForPlayersWithLastNameRonaldo)
+                .Then(IShouldGetAResultWithATermsFacetForPlayersFirstName)
+                    .And(ItShouldHaveTermChristianoWithCount1)
+                    .And(ItShouldHaveTermJohnWithCount1)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldo()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo" });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoe()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe" });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnRonaldo()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Ronaldo" });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamAndRequestATermsFacetOnPlayersFirstNameForPlayersWithLastNameRonaldo()
+        {
+            result = client.Search<Team>()
+                        .TermsFacetFor(x => x.Players, x => x.FirstName, x => x.LastName.Match("Ronaldo"))
+                        .GetResult();
+        }
+
+        TermsFacet facet;
+        void IShouldGetAResultWithATermsFacetForPlayersFirstName()
+        {
+            facet = result.TermsFacetFor(x => x.Players, x => x.FirstName);
+            facet.Should().NotBeNull();
+        }
+
+        void ItShouldHaveTermChristianoWithCount1()
+        {
+            facet.Terms.Should().Contain(x => x.Term.Equals("Cristiano") && x.Count.Equals(1));
+        }
+
+        void ItShouldHaveTermJohnWithCount1()
+        {
+            facet.Terms.Should().Contain(x => x.Term.Equals("John") && x.Count.Equals(1));
+        }
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
+    }
+
+    public class NestedHistogramFacetFilter1 : IDisposable
+    {
+        [Fact]
+        public void RequestHistogramFacetOnANestedListOfComplexObjects()
+        {
+            new Story("Reqest a histogram facet on a item property in a list")
+                .InOrderTo("be able to create a histogram facet on a item property in a filtered lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map list of complex objects as nested and request a histogram facet on a item property")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary100000000)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary1000)
+                    .And(TheSecondTeamHasAPlayerNamedJohnRonaldoWithSalary10)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamAndRequestAHistogramFacetOnPlayersSalaryForPlayersNamedRonaldo)
+                .Then(IShouldGetAResultWithAHistogramFacetForPlayersSalary)
+                    .And(ItShouldHaveABucketFor10WithCount1)
+                    .And(ItShouldHaveABucketFor100000000WithCount1)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldoWithSalary100000000()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", Salary = 100000000 });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoeWithSalary1000()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", Salary = 1000 });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnRonaldoWithSalary10()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Ronaldo", Salary = 10 });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamAndRequestAHistogramFacetOnPlayersSalaryForPlayersNamedRonaldo()
+        {
+            result = client.Search<Team>()
+                        .HistogramFacetFor(x => x.Players, x => x.Salary, 10, x => x.LastName.Match("Ronaldo"))
+                        .GetResult();
+        }
+
+        HistogramFacet facet;
+        void IShouldGetAResultWithAHistogramFacetForPlayersSalary()
+        {
+            facet = result.HistogramFacetFor(x => x.Players, x => x.Salary);
+            facet.Should().NotBeNull();
+        }
+
+        void ItShouldHaveABucketFor10WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 10 && x.Count == 1);
+        }
+
+        void ItShouldHaveABucketFor100000000WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key == 100000000 && x.Count == 1);
+        }
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
+    }
+
+    public class NestedDateHistogramFacet1 : IDisposable
+    {
+        [Fact]
+        public void RequestDateHistogramFacetOnANestedListOfComplexObjects()
+        {
+            new Story("Reqest a date histogram facet on a item property in a list")
+                .InOrderTo("be able to create a date histogram facet on a item property in a lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map list of complex objects as nested and request a date histogram facet on a item property")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldoWhoSigned2008)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoeWhoSigned2010)
+                    .And(TheSecondTeamHasAPlayerNamedJohnRonaldoWhoSigned2010)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamAndRequestADateHistogramFacetOnPlayersSignDate)
+                .Then(IShouldGetAResultWithAHistogramFacetForPlayersSignDate)
+                    .And(ItShouldHaveABucketFor2010WithCount2)
+                    .And(ItShouldHaveABucketFor2008WithCount1)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldoWhoSigned2008()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", SignDate = new DateTime(2008, 1, 1).ToLocalTime() });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoeWhoSigned2010()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", SignDate = new DateTime(2010, 1, 1).ToLocalTime() });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnRonaldoWhoSigned2010()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Ronaldo", SignDate = new DateTime(2010, 1, 1).ToLocalTime() });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamAndRequestADateHistogramFacetOnPlayersSignDate()
+        {
+            result = client.Search<Team>()
+                        .DateHistogramFacetFor(x => x.Players, x => x.SignDate, DateInterval.Year)
+                        .GetResult();
+        }
+
+        DateHistogramFacet facet;
+        void IShouldGetAResultWithAHistogramFacetForPlayersSignDate()
+        {
+            facet = result.DateHistogramFacetFor(x => x.Players, x => x.SignDate);
+            facet.Should().NotBeNull();
+        }
+
+        void ItShouldHaveABucketFor2010WithCount2()
+        {
+            facet.Entries.Should().Contain(x => x.Key.Year == 2010 && x.Count == 2);
+        }
+
+        void ItShouldHaveABucketFor2008WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key.Year == 2008 && x.Count == 1);
+        }
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
+        }
+    }
+
+    public class NestedDateHistogramFacetFilter1 : IDisposable
+    {
+        [Fact]
+        public void RequestDateHistogramFacetOnANestedListOfComplexObjects()
+        {
+            new Story("Reqest a date histogram facet on a item property in a list")
+                .InOrderTo("be able to create a date histogram facet on a item property in a filtered lists of complex objects")
+                .AsA("developer")
+                .IWant("to be able to map list of complex objects as nested and request a date histogram facet on a item property")
+                .WithScenario("mapping list of complex objects as nested")
+                .Given(IHaveAClient)
+                    .And(IHaveMappedIEnumerablePropertiesAsNested)
+                    .And(IHaveTwoTeamObjects)
+                    .And(TheFirstTeamHasAPlayerNamedCristianoRonaldoWhoSigned2008)
+                    .And(TheSecondTeamHasAPlayerNamedCristianoDoeWhoSigned2010)
+                    .And(TheSecondTeamHasAPlayerNamedJohnRonaldoWhoSigned2010)
+                    .And(IHaveIndexedTheTeamObjects)
+                    .And(IHaveWaitedForASecond)
+                .When(ISearchForTeamAndRequestADateHistogramFacetOnPlayersSignDate)
+                .Then(IShouldGetAResultWithAHistogramFacetForPlayersSignDate)
+                    .And(ItShouldHaveABucketFor2010WithCount1)
+                    .And(ItShouldHaveABucketFor2008WithCount1)
+                .Execute();
+        }
+
+        protected IClient client;
+        void IHaveAClient()
+        {
+            client = Client.CreateFromConfig();
+        }
+
+        void IHaveMappedIEnumerablePropertiesAsNested()
+        {
+            client.Conventions.AddNestedConventions();
+        }
+
+        private Team team1, team2;
+        void IHaveTwoTeamObjects()
+        {
+            team1 = new Team("Team 1");
+            team2 = new Team("Team 2");
+        }
+
+        void TheFirstTeamHasAPlayerNamedCristianoRonaldoWhoSigned2008()
+        {
+            team1.Players.Add(new Player { FirstName = "Cristiano", LastName = "Ronaldo", SignDate = new DateTime(2008, 1, 1).ToLocalTime() });
+        }
+
+        void TheSecondTeamHasAPlayerNamedCristianoDoeWhoSigned2010()
+        {
+            team2.Players.Add(new Player { FirstName = "Cristiano", LastName = "Doe", SignDate = new DateTime(2010, 1, 1).ToLocalTime() });
+        }
+
+        void TheSecondTeamHasAPlayerNamedJohnRonaldoWhoSigned2010()
+        {
+            team2.Players.Add(new Player { FirstName = "John", LastName = "Ronaldo", SignDate = new DateTime(2010, 1, 1).ToLocalTime() });
+        }
+
+        void IHaveIndexedTheTeamObjects()
+        {
+            client.Index(team1, team2);
+        }
+
+        void IHaveWaitedForASecond()
+        {
+            Thread.Sleep(1000);
+        }
+
+        SearchResults<Team> result;
+        void ISearchForTeamAndRequestADateHistogramFacetOnPlayersSignDate()
+        {
+            result = client.Search<Team>()
+                        .DateHistogramFacetFor(x => x.Players, x => x.SignDate, DateInterval.Year, x => x.LastName.Match("Ronaldo"))
+                        .GetResult();
+        }
+
+        DateHistogramFacet facet;
+        void IShouldGetAResultWithAHistogramFacetForPlayersSignDate()
+        {
+            facet = result.DateHistogramFacetFor(x => x.Players, x => x.SignDate);
+            facet.Should().NotBeNull();
+        }
+
+        void ItShouldHaveABucketFor2010WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key.Year == 2010 && x.Count == 1);
+        }
+
+        void ItShouldHaveABucketFor2008WithCount1()
+        {
+            facet.Entries.Should().Contain(x => x.Key.Year == 2008 && x.Count == 1);
+        }
+
+        public void Dispose()
+        {
+            client.Delete<Team>(x => x.TeamName.Match(team1.TeamName));
+            client.Delete<Team>(x => x.TeamName.Match(team2.TeamName));
         }
     }
 }
