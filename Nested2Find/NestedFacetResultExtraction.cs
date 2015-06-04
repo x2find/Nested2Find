@@ -11,7 +11,7 @@ using EPiServer.Find.Helpers.Reflection;
 
 namespace Nested2Find
 {
-    public static class NestedTermsFacetResultExtraction
+    public static class NestedFacetResultExtraction
     {
         private static TFacet GetFacetFor<TFacet>(IHasFacetResults facetsResultsContainer, string facetName)
             where TFacet : Facet
@@ -38,6 +38,14 @@ namespace Nested2Find
             this IHasFacetResults<TResult> facetsResultsContainer, Expression<Func<TResult, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, object>> itemFieldSelector)
         {
             return GetFacetFor<HistogramFacet>(facetsResultsContainer, enumerableFieldSelector.GetFieldPath() + "." + itemFieldSelector.GetFieldPath());
+        }
+        #endregion
+
+        #region DateHistogramFacet
+        public static DateHistogramFacet DateHistogramFacetFor<TResult, TEnumerableItem>(
+            this IHasFacetResults<TResult> facetsResultsContainer, Expression<Func<TResult, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, DateTime?>> itemFieldSelector)
+        {
+            return GetFacetFor<DateHistogramFacet>(facetsResultsContainer, enumerableFieldSelector.GetFieldPath() + "." + itemFieldSelector.GetFieldPath());
         }
         #endregion
     }

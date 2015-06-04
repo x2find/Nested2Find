@@ -48,6 +48,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Facets\NestedDateHistogramFacetRequest.cs" />
+    <Compile Include="Api\Facets\NestedDateHistogramFacetRequestConverter.cs" />
     <Compile Include="Api\Facets\NestedFacetRequest.cs" />
     <Compile Include="Api\Facets\NestedHistogramFacetRequestConverter.cs" />
     <Compile Include="Api\Facets\NestedTermsFacetRequest.cs" />
@@ -58,7 +60,7 @@
     <Compile Include="Api\Querying\Filters\NestedFilter.cs" />
     <Compile Include="Api\Querying\Filters\NestedFilterConverter.cs" />
     <Compile Include="Helpers\Reflection\ExpressionExtensions.cs" />
-    <Compile Include="NestedTermsFacetResultExtraction.cs" />
+    <Compile Include="NestedFacetResultExtraction.cs" />
     <Compile Include="ClientConventions\IncludeTypeNameInNestedListFieldNamesInterceptor.cs" />
     <Compile Include="ClientConventions\NestedClientConventionsExtensions.cs" />
     <Compile Include="ClientConventions\NestedFieldNameConvention.cs" />
