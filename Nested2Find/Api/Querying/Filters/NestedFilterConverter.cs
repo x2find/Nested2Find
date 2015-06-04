@@ -28,6 +28,11 @@ namespace Nested2Find.Api.Querying.Filters
             }
             writer.WritePropertyName("filter");
             serializer.Serialize(writer, filter.Filter);
+            if (filter.Join.IsNotNull())
+            {
+                writer.WritePropertyName("join");
+                writer.WriteValue(filter.Join);
+            }
             writer.WriteEndObject();
             writer.WriteEndObject();
         }

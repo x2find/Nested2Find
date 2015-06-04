@@ -48,6 +48,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Facets\NestedFacetRequest.cs" />
     <Compile Include="Api\Facets\NestedHistogramFacetRequestConverter.cs" />
     <Compile Include="Api\Facets\NestedTermsFacetRequest.cs" />
     <Compile Include="Api\Facets\NestedTermsFacetRequestConverter.cs" />

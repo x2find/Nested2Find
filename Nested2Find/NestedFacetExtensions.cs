@@ -9,6 +9,7 @@ using EPiServer.Find.Api.Querying;
 using EPiServer.Find.Helpers;
 using EPiServer.Find.Helpers.Reflection;
 using Nested2Find.Api.Facets;
+using Nested2Find.Api.Querying.Filters;
 using Nested2Find.Helpers.Reflection;
 
 namespace Nested2Find
@@ -18,9 +19,20 @@ namespace Nested2Find
         #region TermsFacet
         public static ITypeSearch<TSource> TermsFacetFor<TSource, TEnumerableItem>(
         this ITypeSearch<TSource> search,
-        Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, string>> itemFieldSelector)
+        Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, string>> itemFieldSelector, Expression<Func<TEnumerableItem, Filter>> filterExpression = null)
         {
-            return search.TermsFacetFor(enumerableFieldSelector, itemFieldSelector, null);
+            Filter facetFilter = null;
+            if (filterExpression.IsNotNull())
+            {
+                var path = search.Client.Conventions.FieldNameConvention.GetFieldName(enumerableFieldSelector);
+                facetFilter = NestedFilterExtensions.ParseFilterExpression(search, filterExpression);
+                NestedFilterExtensions.PrependPathOnNestedFilters(path, facetFilter);
+                facetFilter = new NestedFilter(search.Client.Conventions.FieldNameConvention.GetFieldName(enumerableFieldSelector), facetFilter)
+                {
+                    Join = false
+                };
+            }
+            return search.TermsFacetFor(enumerableFieldSelector, itemFieldSelector,  x => x.FacetFilter = facetFilter);
         }
 
         public static ITypeSearch<TSource> TermsFacetFor<TSource, TEnumerableItem>(
@@ -91,11 +103,26 @@ namespace Nested2Find
         #endregion
 
         #region HistogramFacet
-        public static ITypeSearch<TSource> HistogramFacetFor<TSource, TEnumerable>(
+        public static ITypeSearch<TSource> HistogramFacetFor<TSource, TEnumerableItem>(
             this ITypeSearch<TSource> search,
-            Expression<Func<TSource, NestedList<TEnumerable>>> enumerableFieldSelector, Expression<Func<TEnumerable, object>> itemFieldSelector, int interval)
+            Expression<Func<TSource, NestedList<TEnumerableItem>>> enumerableFieldSelector, Expression<Func<TEnumerableItem, object>> itemFieldSelector, int interval, Expression<Func<TEnumerableItem, Filter>> filterExpression = null)
         {
-            return search.AddNestedHistogramFacetFor(enumerableFieldSelector, itemFieldSelector, x => x.Interval = interval);
+            Filter facetFilter = null;
+            if (filterExpression.IsNotNull())
+            {
+                var path = search.Client.Conventions.FieldNameConvention.GetFieldName(enumerableFieldSelector);
+                facetFilter = NestedFilterExtensions.ParseFilterExpression(search, filterExpression);
+                NestedFilterExtensions.PrependPathOnNestedFilters(path, facetFilter);
+                facetFilter = new NestedFilter(search.Client.Conventions.FieldNameConvention.GetFieldName(enumerableFieldSelector), facetFilter)
+                {
+                    Join = false
+                };
+            }
+            return search.AddNestedHistogramFacetFor(enumerableFieldSelector, itemFieldSelector, x =>
+            {
+                x.Interval = interval;
+                x.FacetFilter = facetFilter;
+            });
         }
 
         private static ITypeSearch<TSource> AddNestedHistogramFacetFor<TSource>(

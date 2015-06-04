@@ -11,16 +11,11 @@ namespace Nested2Find
 {
     public static class NestedFilterExtensions
     {
-        public static DelegateFilterBuilder MatchItem<TListItem>(this NestedList<TListItem> value, 
-                                                            Expression<Func<TListItem, Filter>> filterExpression)
+        public static Filter ParseFilterExpression<TSource, TFilter>(ITypeSearch<TSource> search, Expression<Func<TFilter, Filter>> filterExpression)
         {
-            return new DelegateExpressionFilterBuilder<TListItem>(filterExpression, filter => x =>
-                {
-                    // As the path must be absolute nested NestedFilters must have the path prepended
-                    PrependPathOnNestedFilters(x, filter);
-
-                    return new NestedFilter(x, filter);
-                });
+            var parser = new FilterExpressionParser(search.Client.Conventions);
+            var filter = parser.GetFilter(filterExpression);
+            return filter;
         }
 
         public static void PrependPathOnNestedFilters(string path, object filterOrQuery)
@@ -72,6 +67,18 @@ namespace Nested2Find
             return;
         }
 
+        public static DelegateFilterBuilder MatchItem<TListItem>(this NestedList<TListItem> value,
+                                                           Expression<Func<TListItem, Filter>> filterExpression)
+        {
+            return new DelegateExpressionFilterBuilder<TListItem>(filterExpression, filter => x =>
+            {
+                // As the path must be absolute nested NestedFilters must have the path prepended
+                PrependPathOnNestedFilters(x, filter);
+
+                return new NestedFilter(x, filter);
+            });
+        }
+
         public static ITypeSearch<TSource> Filter<TSource, TListItem>(this ITypeSearch<TSource> search,
                                                                   Expression<Func<TSource, NestedList<TListItem>>> nestedExpression,
                                                                   Expression<Func<TListItem, Filter>> filterExpression)
@@ -85,8 +92,7 @@ namespace Nested2Find
             {
                 throw new ArgumentException(string.Format("{0} is not a nested object.", nestedExpression.GetReturnType().Name));
             }
-            var parser = new FilterExpressionParser(search.Client.Conventions);
-            var filter = parser.GetFilter(filterExpression);
+            var filter = ParseFilterExpression(search, filterExpression);
             PrependPathOnNestedFilters(path, filter);
             var nestedFilter = new NestedFilter(path, filter);
             return search.Filter(nestedFilter);

@@ -1,17 +1,16 @@
 ﻿using EPiServer.Find.Api.Facets;
+using EPiServer.Find.Api.Querying;
 using Newtonsoft.Json;
 
 namespace Nested2Find.Api.Facets
 {
     [JsonConverter(typeof(NestedHistogramFacetRequestConverter))]
-    public class NestedHistogramFacetRequest : FacetRequest
-        {
+    public class NestedHistogramFacetRequest : NestedFacetRequest
+    {
         public NestedHistogramFacetRequest(string name)
             : base(name)
         {
         }
-
-        public string Field { get; set; }
 
         public string KeyField { get; set; }
 
@@ -22,7 +21,5 @@ namespace Nested2Find.Api.Facets
         public string ValueScript { get; set; }
 
         public int? Interval { get; set; }
-
-        public string Nested { get; set; }
     }
 }

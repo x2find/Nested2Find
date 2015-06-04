@@ -4,19 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EPiServer.Find.Api.Facets;
+using EPiServer.Find.Api.Querying;
 using Newtonsoft.Json;
 
 namespace Nested2Find.Api.Facets
 {
     [JsonConverter(typeof(NestedTermsFacetRequestConverter))]
-    public class NestedTermsFacetRequest : FacetRequest
+    public class NestedTermsFacetRequest :NestedFacetRequest
     {
         public NestedTermsFacetRequest(string name) 
             : base(name)
         {
         }
-
-        public string Field { get; set; }
 
         public IEnumerable<string> Fields { get; set; }
 
@@ -25,7 +24,5 @@ namespace Nested2Find.Api.Facets
         public string Script { get; set; }
 
         public bool AllTerms { get; set; }
-
-        public string Nested { get; set; }
     }
 }

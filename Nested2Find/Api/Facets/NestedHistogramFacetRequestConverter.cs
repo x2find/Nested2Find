@@ -53,6 +53,11 @@ namespace Nested2Find.Api.Facets
                 writer.WritePropertyName("nested");
                 writer.WriteValue(facetRequest.Nested);
             }
+            if (facetRequest.FacetFilter.IsNotNull())
+            {
+                writer.WritePropertyName("facet_filter");
+                serializer.Serialize(writer, facetRequest.FacetFilter);
+            }
             writer.WriteEndObject();
         }
 
