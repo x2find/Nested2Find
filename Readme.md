@@ -81,3 +81,27 @@ result = client.Search<Team>()
             .OrderByDescending(x => x.Players, p => p.Salary, SortMode.Max)
             .GetResult();
 ```
+
+#### Facets
+
+In order to facet on nested properties TermsFacetFor/HistogramFacetFor/DateHistogramFacetFor-extensions takes a NestedList expression along with an item expression and an optional filter:
+
+```c#
+result = client.Search<Team>()
+            .TermsFacetFor(x => x.Players, x => x.FirstName)
+            .GetResult();
+```
+
+or (to filter):
+
+```c#
+result = client.Search<Team>()
+            .TermsFacetFor(x => x.Players, x => x.FirstName, x => x.LastName.Match("Ronaldo"))
+            .GetResult();
+```
+
+and to fetch the result:
+
+```c#
+facet = result.TermsFacetFor(x => x.Players, x => x.FirstName);
+```
