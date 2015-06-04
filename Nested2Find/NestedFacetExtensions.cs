@@ -42,7 +42,7 @@ namespace Nested2Find
             return new Search<TSource, IQuery>(search, context =>
             {
                 var facetRequest = new NestedTermsFacetRequest(facetName);
-                facetRequest.Field = search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
+                facetRequest.Field = enumerableFieldSelector.GetNestedFieldPath() + "." + search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
                 facetRequest.Nested = enumerableFieldSelector.GetNestedFieldPath();
                 if (action.IsNotNull())
                 {
@@ -79,7 +79,7 @@ namespace Nested2Find
             return new Search<TSource, IQuery>(search, context =>
             {
                 var facetRequest = new NestedTermsFacetRequest(facetName);
-                facetRequest.Field = search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
+                facetRequest.Field = enumerableFieldSelector1.GetNestedFieldPath() + "." + enumerableFieldSelector2.GetNestedFieldPath() + "." + search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
                 facetRequest.Nested = enumerableFieldSelector1.GetNestedFieldPath() + "." + enumerableFieldSelector2.GetNestedFieldPath();
                 if (action.IsNotNull())
                 {
@@ -110,7 +110,7 @@ namespace Nested2Find
             return new Search<TSource, IQuery>(search, context =>
             {
                 var facetRequest = new NestedHistogramFacetRequest(facetName);
-                facetRequest.Field = search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
+                facetRequest.Field = enumerableFieldSelector.GetNestedFieldPath() + "." + search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
                 facetRequest.Nested = enumerableFieldSelector.GetNestedFieldPath();
                 if (action.IsNotNull())
                 {
@@ -140,7 +140,7 @@ namespace Nested2Find
             return new Search<TSource, IQuery>(search, context =>
             {
                 var facetRequest = new NestedHistogramFacetRequest(facetName);
-                facetRequest.Field = search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
+                facetRequest.Field = enumerableFieldSelector1.GetNestedFieldPath() + "." + enumerableFieldSelector2.GetNestedFieldPath() + "." + search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
                 facetRequest.Nested = enumerableFieldSelector1.GetNestedFieldPath() + "." + enumerableFieldSelector2.GetNestedFieldPath();
                 if (action.IsNotNull())
                 {
