@@ -34,6 +34,7 @@ public class Player
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
+    public int Salary { get; set; }
 }
 ```
 
@@ -50,5 +51,33 @@ or:
 ```c#
 result = client.Search<Team>()
             .Filter(x => x.Players.MatchItem(p => p.FirstName.Match("Cristiano") & p.LastName.Match("Ronaldo")))
+            .GetResult();
+```
+
+#### Sorting
+
+In order to sort on nested properties the OrderBy-extensions takes a filter argument that specifies on which nested object the sort value should be calculated:
+
+```c#
+result = client.Search<Team>()
+            .Filter(x => x.Players, p => p.FirstName.Match("Cristiano"))
+            .OrderBy(x => x.Players, p => p.LastName, p => p.FirstName.Match("Cristiano"))
+            .GetResult();
+```
+
+or:
+
+```c#
+result = client.Search<Team>()
+            .Filter(x => x.Players, p => p.FirstName.Match("Cristiano"))
+            .OrderByDescending(x => x.Players, p => p.LastName, p => p.FirstName.Match("Cristiano"))
+            .GetResult();
+```
+
+As for int/DateTime a SortMode (Min/Max/Avg/Sum) can be specified to decide how to treat multiple sort values. To sort by the mamimum player salary in a team use:
+
+```c#
+result = client.Search<Team>()
+            .OrderByDescending(x => x.Players, p => p.Salary, SortMode.Max)
             .GetResult();
 ```

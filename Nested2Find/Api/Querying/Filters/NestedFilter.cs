@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-using EPiServer.Find.Api.Querying;
+﻿using EPiServer.Find.Api.Querying;
 using EPiServer.Find.Helpers;
+using Newtonsoft.Json;
 
 namespace Nested2Find.Api.Querying.Filters
 {

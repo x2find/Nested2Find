@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EPiServer.Find;
-using EPiServer.Find.Helpers;
-using System.Linq.Expressions;
+﻿using EPiServer.Find;
 using EPiServer.Find.Api.Querying;
+using EPiServer.Find.Helpers;
 using EPiServer.Find.Helpers.Reflection;
 using Nested2Find.Api.Querying.Filters;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace Nested2Find
 {
@@ -25,7 +23,7 @@ namespace Nested2Find
                 });
         }
 
-        private static void PrependPathOnNestedFilters(string path, object filterOrQuery)
+        public static void PrependPathOnNestedFilters(string path, object filterOrQuery)
         {
             if (filterOrQuery is NestedFilter)
             {
@@ -36,7 +34,7 @@ namespace Nested2Find
                 return;
             }
 
-            if (typeof(IEnumerable<Filter>).IsAssignableFrom(filterOrQuery.GetType()))
+            if (filterOrQuery is IEnumerable<Filter>)
             {
                 var filterList = filterOrQuery as IEnumerable<Filter>;
                 foreach (var filter in filterList)
@@ -60,9 +58,14 @@ namespace Nested2Find
                     PrependPathOnNestedFilters(path, obj);
                 }
 
-                if (typeof(IEnumerable<Filter>).IsAssignableFrom(obj.GetType()))
+                if (obj is IEnumerable<Filter>)
                 {
                     PrependPathOnNestedFilters(path, obj);
+                }
+
+                if (obj is String && property.Name.Equals("Field")) // prepend path to field name properties
+                {
+                    property.SetValue(filterOrQuery, string.Format("{0}.{1}", path, obj), null);
                 }
             }
 
@@ -84,6 +87,7 @@ namespace Nested2Find
             }
             var parser = new FilterExpressionParser(search.Client.Conventions);
             var filter = parser.GetFilter(filterExpression);
+            PrependPathOnNestedFilters(path, filter);
             var nestedFilter = new NestedFilter(path, filter);
             return search.Filter(nestedFilter);
         }

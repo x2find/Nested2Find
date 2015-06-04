@@ -8,7 +8,7 @@ using EPiServer.Find.Helpers;
 
 namespace Nested2Find.Api.Querying.Filters
 {
-    class NestedFilterConverter : JsonConverter
+    public class NestedFilterConverter : JsonConverter
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
