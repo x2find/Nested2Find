@@ -63,43 +63,6 @@ namespace Nested2Find
                 context.RequestBody.Facets.Add(facetRequest);
             });
         }
-
-        public static ITypeSearch<TSource> TermsFacetFor<TSource, TEnumerableItem1, TEnumerableItem2>(
-            this ITypeSearch<TSource> search,
-            Expression<Func<TSource, NestedList<TEnumerableItem1>>> enumerableFieldSelector1, Expression<Func<TEnumerableItem1, NestedList<TEnumerableItem2>>> enumerableFieldSelector2, Expression<Func<TEnumerableItem2, string>> itemFieldSelector)
-        {
-            return search.TermsFacetFor(enumerableFieldSelector1, enumerableFieldSelector2, itemFieldSelector, null);
-        }
-
-        public static ITypeSearch<TSource> TermsFacetFor<TSource, TEnumerableItem1, TEnumerableItem2>(
-            this ITypeSearch<TSource> search,
-            Expression<Func<TSource, NestedList<TEnumerableItem1>>> enumerableFieldSelector1, Expression<Func<TEnumerableItem1, NestedList<TEnumerableItem2>>> enumerableFieldSelector2, Expression<Func<TEnumerableItem2, string>> itemFieldSelector, Action<NestedTermsFacetRequest> facetRequestAction)
-        {
-            return search.AddNestedTermsFacetFor(enumerableFieldSelector1, enumerableFieldSelector2, itemFieldSelector, facetRequestAction);
-        }
-
-        private static ITypeSearch<TSource> AddNestedTermsFacetFor<TSource>(
-            this ITypeSearch<TSource> search,
-            Expression enumerableFieldSelector1, Expression enumerableFieldSelector2, Expression itemFieldSelector, Action<NestedTermsFacetRequest> facetRequestAction)
-        {
-            enumerableFieldSelector1.ValidateNotNullArgument("enumerableFieldSelector1");
-            enumerableFieldSelector2.ValidateNotNullArgument("enumerableFieldSelector2");
-            itemFieldSelector.ValidateNotNullArgument("itemFieldSelector");
-
-            var facetName = enumerableFieldSelector1.GetFieldPath() + "." + enumerableFieldSelector2.GetFieldPath() + "." + itemFieldSelector.GetFieldPath();
-            var action = facetRequestAction;
-            return new Search<TSource, IQuery>(search, context =>
-            {
-                var facetRequest = new NestedTermsFacetRequest(facetName);
-                facetRequest.Field = enumerableFieldSelector1.GetNestedFieldPath() + "." + enumerableFieldSelector2.GetNestedFieldPath() + "." + search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
-                facetRequest.Nested = enumerableFieldSelector1.GetNestedFieldPath() + "." + enumerableFieldSelector2.GetNestedFieldPath();
-                if (action.IsNotNull())
-                {
-                    action(facetRequest);
-                }
-                context.RequestBody.Facets.Add(facetRequest);
-            });
-        }
         #endregion
 
         #region HistogramFacet
@@ -139,36 +102,6 @@ namespace Nested2Find
                 var facetRequest = new NestedHistogramFacetRequest(facetName);
                 facetRequest.Field = enumerableFieldSelector.GetNestedFieldPath() + "." + search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
                 facetRequest.Nested = enumerableFieldSelector.GetNestedFieldPath();
-                if (action.IsNotNull())
-                {
-                    action(facetRequest);
-                }
-                context.RequestBody.Facets.Add(facetRequest);
-            });
-        }
-
-        public static ITypeSearch<TSource> HistogramFacetFor<TSource, TEnumerableItem1, TEnumerableItem2>(
-            this ITypeSearch<TSource> search,
-            Expression<Func<TSource, NestedList<TEnumerableItem1>>> enumerableFieldSelector1, Expression<Func<TEnumerableItem1, NestedList<TEnumerableItem2>>> enumerableFieldSelector2, Expression<Func<TEnumerableItem2, object>> itemFieldSelector, int interval)
-        {
-            return search.AddNestedHistogramFacetFor(enumerableFieldSelector1, enumerableFieldSelector2, itemFieldSelector, x => x.Interval = interval);
-        }
-
-        private static ITypeSearch<TSource> AddNestedHistogramFacetFor<TSource>(
-            this ITypeSearch<TSource> search,
-            Expression enumerableFieldSelector1, Expression enumerableFieldSelector2, Expression itemFieldSelector, Action<NestedHistogramFacetRequest> facetRequestAction)
-        {
-            enumerableFieldSelector1.ValidateNotNullArgument("enumerableFieldSelector1");
-            enumerableFieldSelector2.ValidateNotNullArgument("enumerableFieldSelector2");
-            itemFieldSelector.ValidateNotNullArgument("itemFieldSelector");
-
-            var facetName = enumerableFieldSelector1.GetFieldPath() + "." + enumerableFieldSelector2.GetFieldPath() + "." + itemFieldSelector.GetFieldPath();
-            var action = facetRequestAction;
-            return new Search<TSource, IQuery>(search, context =>
-            {
-                var facetRequest = new NestedHistogramFacetRequest(facetName);
-                facetRequest.Field = enumerableFieldSelector1.GetNestedFieldPath() + "." + enumerableFieldSelector2.GetNestedFieldPath() + "." + search.Client.Conventions.FieldNameConvention.GetFieldName(itemFieldSelector);
-                facetRequest.Nested = enumerableFieldSelector1.GetNestedFieldPath() + "." + enumerableFieldSelector2.GetNestedFieldPath();
                 if (action.IsNotNull())
                 {
                     action(facetRequest);
